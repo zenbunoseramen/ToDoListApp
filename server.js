@@ -1,5 +1,4 @@
 const express = require("express");
-const db = require("./database");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -7,47 +6,32 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static("public"));
 
+// メモリ上の簡易DB（Render再起動で消える）
+let todos = [];
+
+// 一覧取得
 app.get("/api/todos", (req, res) => {
-
-  db.all(
-    "SELECT * FROM todos",
-    [],
-    (err, rows) => {
-
-      if (err) {
-        return res.status(500).json(err);
-      }
-
-      res.json(rows);
-
-    }
-  );
-
+  res.json(todos);
 });
 
+// 追加
 app.post("/api/todos", (req, res) => {
+  const title = req.body.title;
 
-  const { title } = req.body;
+  if (!title) {
+    return res.status(400).json({ error: "title is required" });
+  }
 
-  db.run(
-    "INSERT INTO todos(title) VALUES(?)",
-    [title],
-    function(err) {
+  const todo = {
+    id: Date.now(),
+    title: title
+  };
 
-      if (err) {
-        return res.status(500).json(err);
-      }
+  todos.push(todo);
 
-      res.json({
-        id: this.lastID,
-        title
-      });
-
-    }
-  );
-
+  res.json(todo);
 });
 
 app.listen(port, () => {
-  console.log(`Server running on ${port}`);
+  console.log("Server running on " + port);
 });

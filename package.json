@@ -9,14 +9,12 @@
   },
   "keywords": [
     "todo",
-    "express",
-    "sqlite"
+    "express"
   ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "express": "^5.2.1",
-    "sqlite3": "^6.0.1"
+    "express": "^5.2.1"
   }
 }
