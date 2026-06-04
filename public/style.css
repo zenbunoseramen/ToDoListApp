@@ -75,3 +75,30 @@ li {
   background: #333;
   color: white;
 }
+
+
+li {
+  display: flex;
+  align-items: center;
+
+  /* ←左に寄せて、全体を整列 */
+  justify-content: center;
+
+  gap: 10px;
+
+  padding: 10px;
+  background: white;
+  margin-bottom: 8px;
+  border-radius: 6px;
+}
+
+/* チェックボックスは左固定 */
+li input[type="checkbox"] {
+  margin-right: auto;
+}
+
+/* タスク文字は中央寄せっぽく */
+li span {
+  flex: 1;
+  text-align: center;
+}
