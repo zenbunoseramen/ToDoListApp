@@ -1,35 +1,22 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>ToDoアプリ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToDo App</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Sortable.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 </head>
-
 <body>
+  <h1>ToDo App
+    <button id="darkModeBtn">🌙/☀️</button>
+  </h1>
 
-  <div class="container">
+  <input id="todoInput" type="text" placeholder="タスクを入力してEnter">
+  <button onclick="addTodo()">追加</button>
 
-    <!-- ヘッダー（タイトル＋ダークモード） -->
-    <div class="header">
-      <h1>ToDoアプリ</h1>
-
-      <button id="modeBtn" class="icon-btn" onclick="toggleDarkMode()">
-        🌙
-      </button>
-    </div>
-
-    <!-- 入力エリア -->
-    <div class="input-area">
-      <input id="todoInput" type="text" placeholder="タスクを入力">
-      <button onclick="addTodo()">追加</button>
-    </div>
-
-    <!-- リスト -->
-    <ul id="todoList"></ul>
-
-  </div>
+  <ul id="todoList"></ul>
 
   <script src="app.js"></script>
 </body>

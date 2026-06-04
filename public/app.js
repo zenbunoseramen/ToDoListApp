@@ -1,82 +1,39 @@
-
 const input = document.getElementById("todoInput");
+const list = document.getElementById("todoList");
+const darkBtn = document.getElementById("darkModeBtn");
 
-/* Enterで追加 */
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") addTodo();
 });
 
-/* 一覧取得 */
-async function loadTodos() {
-  const res = await fetch("/api/todos", {
-    cache: "no-store" // ★キャッシュで復活するのを防ぐ
-  });
+// メモリ保存（完全リセット版）
+let todos = [];
 
-  const todos = await res.json();
-
-  const list = document.getElementById("todoList");
+function renderTodos() {
   list.innerHTML = "";
-
   todos.forEach(todo => {
     const li = document.createElement("li");
     li.dataset.id = todo.id;
 
-    // チェックボックス
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = todo.done;
 
-    // テキスト
     const span = document.createElement("span");
     span.textContent = todo.title;
+    span.classList.toggle("done", todo.done);
 
-    // 見た目反映
-    function render() {
-      span.classList.toggle("done", todo.done);
-    }
-
-    render();
-
-    // チェック更新
-    checkbox.onchange = async () => {
+    // チェックボックス切り替え
+    checkbox.onchange = () => {
       todo.done = checkbox.checked;
-
-      await fetch(`/api/todos/${todo.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ done: checkbox.checked })
-      });
-
-      render();
+      span.classList.toggle("done", todo.done);
     };
 
-    // 編集
-    span.ondblclick = async () => {
-      const newTitle = prompt("編集", todo.title);
-      if (!newTitle || !newTitle.trim()) return;
-
-      todo.title = newTitle;
-
-      await fetch(`/api/todos/${todo.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: newTitle })
-      });
-
-      span.textContent = newTitle;
-    };
-
-    // 削除（完全反映版）
     const delBtn = document.createElement("button");
     delBtn.textContent = "削除";
-
-    delBtn.onclick = async () => {
-      await fetch(`/api/todos/${todo.id}`, {
-        method: "DELETE"
-      });
-
-      // ★reload依存をやめて即DOM削除
-      li.remove();
+    delBtn.onclick = () => {
+      todos = todos.filter(t => t.id !== todo.id);
+      renderTodos();
     };
 
     li.appendChild(checkbox);
@@ -87,28 +44,30 @@ async function loadTodos() {
   });
 }
 
-/* 追加（空禁止・即再読み込み） */
-async function addTodo() {
-  const value = input.value;
+// 追加
+function addTodo() {
+  const value = input.value.trim();
+  if (!value) return;
 
-  if (!value.trim()) return;
-
-  await fetch("/api/todos", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title: value })
-  });
-
+  const todo = { id: Date.now(), title: value, done: false };
+  todos.push(todo);
   input.value = "";
-
-  // ★必ず最新状態に更新
-  loadTodos();
+  renderTodos();
 }
 
-/* ダークモード */
-function toggleDarkMode() {
+// ダークモード切替
+darkBtn.onclick = () => {
   document.body.classList.toggle("dark");
-}
+};
 
-/* 初期読み込み */
-loadTodos();
+// Sortable.jsでドラッグ並べ替え
+Sortable.create(list, {
+  animation: 150,
+  onEnd: (evt) => {
+    const item = todos.splice(evt.oldIndex, 1)[0];
+    todos.splice(evt.newIndex, 0, item);
+    renderTodos();
+  }
+});
+
+renderTodos();
