@@ -1,21 +1,36 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>ToDoアプリ</title>
+  <meta charset="UTF-8">
+  <title>ToDoアプリ</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<h1>ToDoアプリ</h1>
+  <div class="container">
 
-<input id="todoInput">
-<button onclick="addTodo()">
-追加
-</button>
+    <!-- ヘッダー（タイトル＋ダークモード） -->
+    <div class="header">
+      <h1>ToDoアプリ</h1>
 
-<ul id="todoList"></ul>
+      <button id="modeBtn" class="icon-btn" onclick="toggleDarkMode()">
+        🌙
+      </button>
+    </div>
 
-<script src="app.js"></script>
+    <!-- 入力エリア -->
+    <div class="input-area">
+      <input id="todoInput" type="text" placeholder="タスクを入力">
+      <button onclick="addTodo()">追加</button>
+    </div>
 
+    <!-- リスト -->
+    <ul id="todoList"></ul>
+
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
